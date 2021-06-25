@@ -8,6 +8,7 @@ function App() {
   useEffect(() => {
     authService.onAuthStateChanged((user) => {
       if (user) {
+        // 오브젝트가 너무 크면 리액트가 업데이트 상황을 놓칠 수 있다. 따라서 setUserObj(user) 대신 크기를 줄여서(필요한 값들만) 사용한다.
         setUserObj({
           displayName: user.displayName,
           uid: user.uid,

@@ -1,9 +1,11 @@
+import Nweet from "components/Nweet";
 import { authService, dbService } from "fbase";
 import React, { useEffect, useState } from "react";
 
 const Profile = ({ userObj, refreshUser }) => {
   const onLogOutClick = () => authService.signOut();
   const [newDisplayName, setNewDisplayName] = useState(userObj.displayName);
+  const [myNweets, setMyNweets] = useState([]);
   const onChange = (event) => {
     const {
       target: { value },
@@ -22,13 +24,16 @@ const Profile = ({ userObj, refreshUser }) => {
     const nweets = await dbService
       .collection("nweets")
       .where("creatorId", "==", userObj.uid)
-      .orderBy("createdAt")
+      .orderBy("createdAt", "desc")
       .get();
-    console.log(nweets.docs.map((doc) => doc.data()));
+
+    setMyNweets(
+      nweets.docs.map((nweet) => ({ id: nweet.id, ...nweet.data() }))
+    );
   };
   useEffect(() => {
     getMyNweets();
-  });
+  }, []);
   return (
     <>
       <form onSubmit={onSubmit}>
@@ -41,6 +46,11 @@ const Profile = ({ userObj, refreshUser }) => {
         <input type="submit" value="Update Profile" />
       </form>
       <button onClick={onLogOutClick}>Log Out</button>
+      <div>
+        {myNweets.map((nweet) => (
+          <Nweet key={nweet.id} nweetObj={nweet} isOwner={true} />
+        ))}
+      </div>
     </>
   );
 };

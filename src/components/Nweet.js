@@ -51,6 +51,9 @@ const Nweet = ({ nweetObj, isOwner }) => {
         </>
       ) : (
         <>
+          <h3>
+            {nweetObj.creatorDisplayName} {nweetObj.time}
+          </h3>
           <h4>{nweetObj.text}</h4>
           {nweetObj.attachmentUrl && (
             <img src={nweetObj.attachmentUrl} width="50px" />
